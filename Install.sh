@@ -1,10 +1,11 @@
+#!/bin/sh
+#
 # This is a basic bash script to install Mod-Sec WAF
-# And to add Proxxypass & Proxypass-reverse to the
-# Mod Security WAF.
-
+# and to add Proxxypass & Proxypass-reverse (Virtual-host) to the Mod Security WAF.
+#
 # Written by - SHAW (shawsuraj)
-
-
+#
+#
 # ModSecurity, sometimes called Modsec, is an open-source web application firewall (WAF).
 # Originally designed as a module for the Apache HTTP Server, it has evolved to provide an
 # array of Hypertext Transfer Protocol request and response filtering capabilities along with
@@ -80,7 +81,7 @@ sudo a2enmod proxy_html
 
 # Modifying the Deafult COnfing
 sudo mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf.bk
-sudo cp 000-default.conf /etc/apache2/sites-enabled/000-default.conf
+sudo cp files/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 #Restart the apache server
 sudo systemctl restart apache2
 

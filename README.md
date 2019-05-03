@@ -57,3 +57,11 @@ Exit from text-editor - Ctrl + X
 $ sudo leafpad /etc/apache2/sites-enabled/000-default.conf
 ```
 Save - Ctrl + S
+
+<br/>
+
+**Use the command below to restart apache**
+```
+$ sudo systemctl restart apache2
+```
+Note - Restart apache everytime you cahnge IP.
