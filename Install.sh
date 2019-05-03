@@ -19,15 +19,15 @@ then
 echo " "
 else
   echo "Installing apache2"
-  sudo apt-get install apache2
+  sudo apt-get install apache2 -y
 fi
 
 # Installing git
-sudo apt-get install git
+sudo apt-get install git -y
 
 # Install ModSecurity
 echo "Installing ModSecurity"
-sudo apt-get install libapache2-mod-security2
+sudo apt-get install libapache2-mod-security2 -y
 
 echo "Restarting Apache"
 sudo service apache2 restart
@@ -36,10 +36,10 @@ echo "Now Configuring ModSecurity"
 sudo cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
 
 # Changing the value of SecRuleEngine from DetectionOnly to On
-sed -i -e 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' nano /etc/modsecurity/modsecurity.conf
+sudo sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/modsecurity/modsecurity.conf
 
 # Restarting Apache for the changes to take effect
-sudo systenctk restart apache2
+sudo systemctl restart apache2
 
 # ModSecurity has default rules set located
 # at /usr/share/modsecurity-crs directory.
@@ -52,13 +52,13 @@ sudo mv /usr/share/modsecurity-crs /usr/share/modsecurity-crs.bk
 echo "Downloading new rule sets"
 sudo git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /usr/share/modsecurity-crs
 
-# Copying the sample configuration file from the downloaded rules
+# Setting the configuration file from the downloaded crs
 sudo cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
 
 
 # To get these rules working on Apache, adding the following two lines
-echo "IncludeOptional /usr/share/modsecurity-crs/*.conf" >> /etc/apache2/mods-enabled/security2.conf
-echo 'IncludeOptional "/usr/share/modsecurity-crs/rules/*.conf' >> /etc/apache2/mods-enabled/security2.conf
+echo 'IncludeOptional /usr/share/modsecurity-crs/*.conf' | sudo tee -a /etc/apache2/mods-enabled/security2.conf
+echo 'IncludeOptional "/usr/share/modsecurity-crs/rules/*.conf' | sudo tee -a /etc/apache2/mods-enabled/security2.conf
 
 
 # Restaring Apache
@@ -66,7 +66,7 @@ echo "Almost Done, Now Restarting Apache"
 sudo systemctl restart apache2
 
 #Activating the modules
-ehco "Enabling the modules"
+echo "Enabling the modules"
 sudo a2enmod proxy
 sudo a2enmod proxy_http
 sudo a2enmod proxy_ajp
@@ -79,29 +79,13 @@ sudo a2enmod proxy_html
 
 
 # Modifying the Deafult COnfing
-echo " Modifying the default Apache virtual host"
-match='</VirtualHost>'
-file='/etc/apache2/sites-enabled/000-default.conf'
-l1='\n\nProxyPreserveHost On\n\n'
-l2='# Servers to proxy the connection, or;\n'
-l3='# List of application servers\n'
-l4='# ProxyPass / http://[IP Addr.]:[port]/\n'
-l5='# ProxyPassReverse / http://[IP Addr.]:[port]/\n'
-l5='# Example:\n'
-l6='ProxyPass / http://0.0.0.0:8080/\n'
-l7='ProxyPassReverse / http://0.0.0.0:8080/\n\n'
-l8='ServerName localhost'
-
-
-sed -i "s/$match/$l1$l2$l3$l4$l5$l6$l7$l8\n\n$match/" $file
-
-
+sudo mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf.bk
+sudo cp 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 #Restart the apache server
 sudo systemctl restart apache2
 
 
 echo "Setup is complete"
 echo "Set Proxypass -(server-ip)  and Proxypass-reverse -(WAF-ip)"
-echo "here -> /etc/apache2/sites-enabled/000-default.conf"
-echo "And then restart the apache server"
-echo "Then it will be ready to use"
+echo "HERE -> /etc/apache2/sites-enabled/000-default.conf"
+echo "And then restart the apache server to apply the changes."
