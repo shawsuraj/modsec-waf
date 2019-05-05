@@ -19,7 +19,7 @@ if [ $ans = n ]
 then
 echo " "
 else
-  echo "Installing apache2"
+  echo "Installing apache2 ..."
   sudo apt-get install apache2 -y
 fi
 
@@ -27,13 +27,13 @@ fi
 sudo apt-get install git -y
 
 # Install ModSecurity
-echo "Installing ModSecurity"
+echo "Installing ModSecurity ..."
 sudo apt-get install libapache2-mod-security2 -y
 
-echo "Restarting Apache"
+echo "Restarting Apache ..."
 sudo service apache2 restart
 
-echo "Now Configuring ModSecurity"
+echo "Now Configuring ModSecurity ..."
 sudo cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
 
 # Changing the value of SecRuleEngine from DetectionOnly to On
@@ -50,7 +50,7 @@ sudo systemctl restart apache2
 sudo mv /usr/share/modsecurity-crs /usr/share/modsecurity-crs.bk
 
 # Then, downloading new rule set from GitHub using the command below:
-echo "Downloading new rule sets"
+echo "Downloading new rule sets ..."
 sudo git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /usr/share/modsecurity-crs
 
 # Setting the configuration file from the downloaded crs
@@ -63,11 +63,11 @@ echo 'IncludeOptional "/usr/share/modsecurity-crs/rules/*.conf' | sudo tee -a /e
 
 
 # Restaring Apache
-echo "Almost Done, Now Restarting Apache"
+echo "Almost Done, Now Restarting Apache ..."
 sudo systemctl restart apache2
 
 #Activating the modules
-echo "Enabling the modules"
+echo "Enabling the modules ..."
 sudo a2enmod proxy
 sudo a2enmod proxy_http
 sudo a2enmod proxy_ajp
@@ -81,7 +81,7 @@ sudo a2enmod proxy_html
 
 # Modifying the Deafult COnfing
 sudo mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf.bk
-sudo cp files/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+sudo cp conf_file/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 #Restart the apache server
 sudo systemctl restart apache2
 
