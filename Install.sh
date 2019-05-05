@@ -81,7 +81,7 @@ sudo a2enmod proxy_html
 
 # Modifying the Deafult COnfing
 sudo mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf.bk
-sudo cp conf_file/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+sudo cp config_file/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 #Restart the apache server
 sudo systemctl restart apache2
 
